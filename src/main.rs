@@ -1,7 +1,7 @@
 use std::path::Path;
 
 use chrono::Datelike;
-use image::{imageops, GenericImageView};
+use image::imageops;
 
 // Captain image is 500x425
 
@@ -18,7 +18,6 @@ fn get_path() -> &'static str {
 
     let current_time = chrono::offset::Local::now();
     let weekday = current_time.date_naive().weekday();
-    println!("{}", weekday);
     match weekday {
         chrono::Weekday::Mon => return MONDAY_PATH,
         chrono::Weekday::Tue => return TUESDAY_PATH,
@@ -32,21 +31,17 @@ fn get_path() -> &'static str {
 
 fn main() {
     // load png in memory and see how we can read it?
-    println!("Hello, world!!!");
 
     // `open` returns a `DynamicImage` on success.
     let mut cap = image::open("src/captain.png").unwrap();
     let img = image::open(get_path()).unwrap();
     let img2 = img.resize(120, 30, image::imageops::FilterType::Gaussian);
     // The dimensions method returns the images width and height.
-    println!("dimensions {:?}", img.dimensions());
-    println!("dimensions {:?}", img2.dimensions());
 
+    //approximate location of speech bubble where we overlay the day of the week
     imageops::overlay(&mut cap, &img2, 195, 135);
 
     let save_path = Path::new("src/new.png");
     cap.save(save_path).unwrap();
-
-    // The color method returns the image's `ColorType`.
-    println!("{:?}", img.color());
+    return;
 }
